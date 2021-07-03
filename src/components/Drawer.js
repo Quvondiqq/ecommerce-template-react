@@ -1,28 +1,25 @@
 
 
-const Drawer = () => {
+const Drawer = ({onCloseCart, items = []}) => {
     return(
-        <div style={{display: 'none'}} className='overlay'>
+        <div  className='overlay'>
             <div className="drawer d-flex flex-column">
-                <h2 className='mb-30'>Корзина</h2>
+                <div className="d-flex align-center justify-between mb-40">
+                    <h2>Корзина</h2>
+                    <img onClick={onCloseCart} className="cu-p" src="/img/btn/remove-drawer-item.svg" alt="123" />
+                </div>
                 <div className="items mb-30">
-                    <div className="drawer__item d-flex align-center mb-20">
-                        <img className='mr-15' width={70} height={70} src="/img/sneakers/1.jpg" alt="sneakers" />
+                    {items.map((obj) => (
+                    <div className="drawer__item d-flex justify-between align-center mb-20">
+                        <div style={{backgroundImage: `url(${obj.imgURL})`}} className='cartItem mr-15' alt="sneakers">
+                        </div>
                         <div className='mr-20'>
-                        <p className='mb-5'>Мужские Кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
+                        <p className='mb-5'>{obj.title}</p>
+                        <b>{obj.price} руб.</b>
                         </div>
                         <img className='removeBtn' src="/img/btn/remove-drawer-item.svg" alt="iconRemove" />
                     </div>
-                    <div className="drawer__item d-flex align-center mb-20">
-                        <img className='mr-15' width={70} height={70} src="/img/sneakers/1.jpg" alt="sneakers" />
-                        <div className='mr-20'>
-                        <p className='mb-5'>Мужские Кроссовки Nike Air Max 270</p>
-                        <b>12 999 руб.</b>
-                        </div>
-                        <img className='removeBtn' src="/img/btn/remove-drawer-item.svg" alt="iconRemove" />
-                    </div>
-    
+                    ))}
                 </div>
                 <div className="cartTotalBlock">
                     <ul>
