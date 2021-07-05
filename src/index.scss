@@ -7,8 +7,7 @@ body {
   margin: 0;  
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #E5E5E5;;
-
+  background-color: #E5E5E5;
 }
 
 
@@ -35,6 +34,8 @@ header {
 
   h1  {
     margin: 0;
+    max-width: 70%;
+    overflow-wrap: break-word;
   }
 }
 
@@ -44,6 +45,15 @@ header {
   padding: 11px;
   border-radius: 10px;
   border: 1px solid #F3F3F3;
+  position: relative;
+
+    .clear {
+      position: absolute;
+      right: 5px;
+      height: 20px;
+      width: 20px;
+      cursor: pointer;
+    }
 
     &__icon{
       cursor: pointer;
@@ -51,6 +61,7 @@ header {
 
     &__input {
       padding-left: 10px;
+      padding-right: 25px;
       border: none;
       font-size: 14px;
       line-height: 17px;
@@ -70,7 +81,8 @@ header {
   top: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  overflow: hidden;
+  
+  
 }
 
   .drawer {
@@ -97,7 +109,7 @@ header {
 
     .items {
       overflow: auto;
-      flex: 1;
+      height: 70%;
     }
 
     ::-webkit-scrollbar {
@@ -144,7 +156,7 @@ header {
     div {
       margin: 0 8px;
       height: 15px;
-      flex: 1;
+      height: 30%;
       border-bottom: 1px dashed #DFDFDF;
     }
 
@@ -191,6 +203,40 @@ header {
       }
     }
   }
+
+  .cartEmpty__btn {
+    width: 80%;
+    padding: 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #9DD458;
+    border: none;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: background .2s ease-in;
+    
+    img {
+      position: absolute;
+      left: 50px;
+      top: 50%;
+      transform: rotate(180deg) translateY(50%);
+      transition: transform .2s ease-in;
+    }
+
+    &:hover {
+      background-color: darken(#9DD458, 10);
+      img {
+        transform: rotate(180deg) translate(10px, 50%);
+       
+      }
+    }
+
+    &:active {
+      background-color: lighten(#9DD458, 5);
+    }
+  }
+  
 
 
 

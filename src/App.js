@@ -1,55 +1,90 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import './index.scss';
-import Header from './components/Header'
-import Card from './components/Card';
+import Header from './components/Header';
 import Drawer from './components/Drawer';
+import {Route} from 'react-router-dom';
+
+import Home from './pages/Home';
+import Favourites from './pages/Favourites'
 
 
 function App() {
   const [items, setItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
+  const [favouriteItem, setFavouriteItem] = useState([]);
   const [cartOpened, setCartOpened] = useState(false);
-
+  const [searchValue, setSearchValue] = useState('');
   useEffect(() => {
-    fetch("https://60e004336b689e001788c87f.mockapi.io/items")
-    .then(res => res.json())
-    .then(json => setItems(json))
-    }, []
-  )
+    axios.get("https://60e004336b689e001788c87f.mockapi.io/items").then(res => {
+    setItems(res.data)
+    })
 
-  const onAddToCart = (obj) => {
-    if(cartItems.includes(obj) === false) {
-       setCartItems(prev => [...prev, obj])
+    axios.get("https://60e004336b689e001788c87f.mockapi.io/cart").then(res => {
+      setCartItems(res.data)
+    })
+    axios.get("https://60e004336b689e001788c87f.mockapi.io/favourites").then(res => {
+      setFavouriteItem(res.data)
+    })
+    },[])
+
+    const onAddToCart = async (obj) => {
+      console.log(obj)
+      try{
+        const { data } = await axios.post("https://60e004336b689e001788c87f.mockapi.io/cart", obj)
+        setCartItems(prev => [...prev, data]);
+      } catch(error) {
+        alert("Unable to add items to Card")
       }
-       
-  }
+
+    }
+
+    const onAddToFavourite = async(obj) => {
+      console.log(obj)
+      try{      
+          if(favouriteItem.find(fav => fav.id === obj.id)) {
+          axios.delete(`https://60e004336b689e001788c87f.mockapi.io/favourites/${obj.id}`)
+        } else {
+          const { data } = await axios.post("https://60e004336b689e001788c87f.mockapi.io/favourites", obj)
+          setFavouriteItem(prev => [...prev, data]);
+        }
+      } catch(error) {
+        alert("Unable to add to favourite")
+      }
+
+    }
+
+    const onChangeSearchInput = (e) => {
+        setSearchValue(e.target.value)
+    }
+
+    const removeItem = (id) => {
+      console.log(id)
+      axios.delete(`https://60e004336b689e001788c87f.mockapi.io/cart/${id}`)
+      setCartItems(prev => prev.filter(item => item.id !== id));
+    }
  
 
   return (
     <div className="wrapper clear">
-      {cartOpened && <Drawer items={cartItems} onCloseCart={() => setCartOpened(false)}/>}
+      {cartOpened && <Drawer items={cartItems} onCloseCart={() => setCartOpened(false)} onRemove={removeItem}/>}
       <Header onClickCart={() => setCartOpened(true)} />
-      <div className='content p-40'>
-      <div className='mb-40 d-flex align-center justify-between'>
-          <h1>Все кроссовки</h1>
-          <div className='d-flex align-center search-block'>
-            <img className='search-block__icon' src="/img/search-icon.svg" alt="search-icon" />
-            <input className='search-block__input' placeholder='Поиск...' />
-          </div>
-        </div>
-
-        <div className="sneakers-cnt d-flex flex-wrap">
-            {items.map((item, index) => (
-              <Card key={index}
-              title={item.name} 
-              price={item.price} 
-              imgURL={item.imgURL}
-              onClickPlus={(obj) => onAddToCart(obj)}
-              onClickFavourite={() => console.log('Najimali na serdechko')}
-              />
-            ))}
-        </div>
-      </div>
+      <Route path="/" exact>
+          <Home 
+            items={items}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            onChangeSearchInput={onChangeSearchInput}
+            onAddToCart={onAddToCart}
+            onAddToFavourite={onAddToFavourite}
+          />
+      </Route>
+      <Route path="/favourites" exact>
+          <Favourites 
+          favItems={favouriteItem}
+          onAddToFavourite={onAddToFavourite}
+          />
+      </Route>
     </div>
   );
 }
